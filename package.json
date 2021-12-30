@@ -1,10 +1,10 @@
 {
-  "name": "hello-world",
+  "name": "countdown",
   "version": "0.1.0",
   "private": true,
   "description": "",
   "main": "built/server.js",
-  "author": "Microsoft Corporation",
+  "author": "paperworkStudio",
   "license": "MIT",
   "keywords": [
     "mixed reality",
