@@ -139,7 +139,7 @@ export default class HelloWorld {
 		await this.preloadModels();
 
 		// create colon actor
-		this.colon = await MRE.Actor.CreateFromGltf(this.assets, {
+		this.colon = MRE.Actor.CreateFromGltf(this.assets, {
 			uri: "colon.glb", 
 			colliderType: "box",
 			actor: {
@@ -295,9 +295,9 @@ export default class HelloWorld {
 
 	private cleanChildren(actor: MRE.Actor, withTag: string) {
 		actor.children.forEach(child => {
-			if (child.tag == withTag) {
+			if (child.tag === withTag) {
 				child.destroy();
-			};
+			}
 		});
 	}
 
