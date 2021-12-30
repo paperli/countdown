@@ -15,8 +15,10 @@ export default class HelloWorld {
 	private assets: MRE.AssetContainer;
 	private digits: MRE.Prefab[] = new Array(10);
 	private colon: MRE.Actor = null;
+	private champaign: MRE.Actor = null;
 	private yPos = -1;
 	private popping = false;
+	private testCube: MRE.Actor = null;
 
 	constructor(private context: MRE.Context) {
 		this.context.onStarted(() => this.started());
@@ -156,6 +158,21 @@ export default class HelloWorld {
 
 		this.playBreathEffect();
 
+		// load champaign
+		/*this.champaign = MRE.Actor.CreateFromGltf(this.assets, {
+			uri: "champaign.glb",
+			colliderType: "box",
+			actor: {
+				name: "champaign",
+				parentId: this.text.id,
+				transform: {
+					local: {
+						position: {x: 0, y: -1, z: 0}
+					}
+				}
+			}
+		});*/
+
 		setInterval(() => {
 			let adjustYPos = -0.07;
 			// clean countdown models
@@ -237,7 +254,7 @@ export default class HelloWorld {
 					this.popping = false;
 				}
 			}
-		}, 200);
+		}, 500);
 	}
 
 	private cleanAllAnims(actor: MRE.Actor) {
@@ -311,6 +328,26 @@ export default class HelloWorld {
 							.catch(e => MRE.log.error("app", e)));
 		}
 
+		/*promises.push(this.assets.loadGltf("champaign.glb", "box")
+						.then(assets => {
+							this.champaign = MRE.Actor.CreateFromPrefab(this.context, {
+								firstPrefabFrom: assets,
+								actor: {
+									parentId: this.text.id,
+									transform: {
+										local: {
+											position: {x: 0, y: -1, z:0},
+											rotation: MRE.Quaternion.RotationAxis(MRE.Vector3.Up(), Math.PI)
+										}
+									}
+								}
+							});
+							let anims = this.champaign.targetingAnimationsByName;
+							Object.keys(anims).map(animName => {
+								this.text.text.contents = animName;
+							});
+						})
+						.catch(e => MRE.log.error("app", e)));*/
 		return Promise.all(promises);
 	}
 
