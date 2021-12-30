@@ -4,9 +4,9 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
-import { Actor, Animation, AnimationData, AnimationWrapMode, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
-import { timeStamp } from 'console';
-import { Transform } from 'stream';
+//import { Actor, Animation, AnimationData, AnimationWrapMode, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
+//import { timeStamp } from 'console';
+//import { Transform } from 'stream';
 
 /**
  * The main class of this app. All the logic goes here.
@@ -190,16 +190,16 @@ export default class HelloWorld {
 		});*/
 
 		setInterval(() => {
-			let adjustYPos = -0.07;
+			const adjustYPos = -0.07;
 			// clean countdown models
 			this.cleanChildren(this.colon, "digit");
 
-			let now = new Date();
-			let currentMinues = now.getMinutes();
-			let minues = 59 - currentMinues;
-			let tensAtMinues = parseInt((minues/10).toString());
-			let unitsAtMinues = parseInt(minues.toString()[minues < 10 ? 0 : 1]);
-			let tensAtMinuesModel = MRE.Actor.CreateFromPrefab(this.context, {
+			const now = new Date();
+			const currentMinues = now.getMinutes();
+			const minues = 59 - currentMinues;
+			const tensAtMinues = parseInt((minues/10).toString());
+			const unitsAtMinues = parseInt(minues.toString()[minues < 10 ? 0 : 1]);
+			MRE.Actor.CreateFromPrefab(this.context, {
 				prefab: this.digits[tensAtMinues],
 				actor: {
 					tag: "digit",
@@ -212,7 +212,7 @@ export default class HelloWorld {
 				}
 			});
 
-			let unitsAtMinuesModel = MRE.Actor.CreateFromPrefab(this.context, {
+			MRE.Actor.CreateFromPrefab(this.context, {
 				prefab: this.digits[unitsAtMinues],
 				actor: {
 					tag: "digit",
@@ -226,11 +226,11 @@ export default class HelloWorld {
 			});
 			
 			//text.text.contents = (60 - new Date().getSeconds()).toString();
-			let currentSeconds = now.getSeconds();
-			let seconds = 59 - currentSeconds;
-			let tens = parseInt((seconds/10).toString());
-			let units = parseInt(seconds.toString()[seconds < 10 ? 0 : 1]);
-			let tensModel = MRE.Actor.CreateFromPrefab(this.context, {
+			const currentSeconds = now.getSeconds();
+			const seconds = 59 - currentSeconds;
+			const tens = parseInt((seconds/10).toString());
+			const units = parseInt(seconds.toString()[seconds < 10 ? 0 : 1]);
+			MRE.Actor.CreateFromPrefab(this.context, {
 				prefab: this.digits[tens],
 				actor: {
 					tag: "digit",
@@ -243,7 +243,7 @@ export default class HelloWorld {
 				}
 			});
 
-			let unitsModel = MRE.Actor.CreateFromPrefab(this.context, {
+			MRE.Actor.CreateFromPrefab(this.context, {
 				prefab: this.digits[units],
 				actor: {
 					tag: "digit",
@@ -265,7 +265,7 @@ export default class HelloWorld {
 				}
 			}
 
-			if (minues < 1 && seconds == 0 && !this.dropping) {
+			if (minues < 1 && seconds === 0 && !this.dropping) {
 				this.dropping = true;
 				// play new year animation
 				this.newyear.appearance.enabled = true;
@@ -370,7 +370,7 @@ export default class HelloWorld {
 	}
 
 	private cleanAllAnims(actor: MRE.Actor) {
-		let anims = actor.targetingAnimationsByName;
+		const anims = actor.targetingAnimationsByName;
 		anims.forEach(anim => {
 			anim.delete();
 		});
