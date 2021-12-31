@@ -4,6 +4,7 @@
  */
 
 import * as MRE from '@microsoft/mixed-reality-extension-sdk';
+import { Animation, AnimationEaseCurves, AnimationWrapMode } from '@microsoft/mixed-reality-extension-sdk';
 //import { Actor, Animation, AnimationData, AnimationWrapMode, Vector3 } from '@microsoft/mixed-reality-extension-sdk';
 //import { timeStamp } from 'console';
 //import { Transform } from 'stream';
@@ -27,6 +28,7 @@ export default class HelloWorld {
 	private cheerSound: MRE.Sound;
 	private countDownString = "NEW YEAR COUNTDOWN";
 	private finalLineString = "\\ 2022 /";
+	private firstTime = true;
 
 	constructor(private context: MRE.Context) {
 		this.context.onStarted(() => this.started());
@@ -56,6 +58,7 @@ export default class HelloWorld {
 			}
 		});
 
+		// Fix the text alignment problem
 		this.text.text.contents = this.finalLineString;
 		this.text.text.contents = this.countDownString;
 
@@ -190,6 +193,10 @@ export default class HelloWorld {
 		});*/
 
 		setInterval(() => {
+			if (this.firstTime) {
+				this.firstTime = false;
+			}
+
 			const adjustYPos = -0.07;
 			// clean countdown models
 			this.cleanChildren(this.colon, "digit");
@@ -282,9 +289,16 @@ export default class HelloWorld {
 				const timer = setTimeout(() => {
 					this.resetCountdownTimer();
 					clearTimeout(timer);
-				}, 15 * 60 * 1000);
+				}, 20 * 60 * 1000);
 			}
 		}, 500);
+	}
+
+	private playChampaignAnimations() {
+		this.champaign.targetingAnimationsByName.forEach(anim => {
+			anim.play();
+			anim.wrapMode = AnimationWrapMode.Once;
+		});
 	}
 
 	private playCheerSound() {
@@ -327,6 +341,9 @@ export default class HelloWorld {
 	private resetNewYearSign() {
 		this.newyear.destroy();
 		this.spawnNewYearSign();
+
+		// hide champaigns
+		this.champaign.appearance.enabled = false;
 	}
 
 	private playDropEffect(duration: number) {
@@ -338,6 +355,10 @@ export default class HelloWorld {
 			duration: duration,
 			easing: MRE.AnimationEaseCurves.EaseOutBack
 		});
+		// show champaign and play animations
+		this.champaign.transform.local.scale = MRE.Vector3.Zero();
+		this.champaign.appearance.enabled = true;
+		this.playChampaginAppearEffect(1);
 		/*const dropAnimData = this.assets.createAnimationData(
 			"Drop",
 			{
@@ -374,6 +395,24 @@ export default class HelloWorld {
 		anims.forEach(anim => {
 			anim.delete();
 		});
+	}
+
+	private playChampaginAppearEffect(duration: number) {
+		const animData = this.assets.createAnimationData(
+			"ChampaignAppear",
+			{
+				tracks: [{
+					target: MRE.ActorPath("target").transform.local.scale,
+					keyframes: this.generateAppearScaleKeyframes(duration),
+					easing: MRE.AnimationEaseCurves.EaseOutBack
+				}]
+			}
+		);
+		animData.bind(
+			{ target: this.champaign },
+			{ isPlaying: true, wrapMode: AnimationWrapMode.Once }
+		)
+		this.playChampaignAnimations();
 	}
 
 	private playSmashEffect(duration: number) {
@@ -463,6 +502,26 @@ export default class HelloWorld {
 						})
 						.catch(e => MRE.log.error("app", e)));
 
+		// hide champaign by default
+		promises.push(this.assets.loadGltf("champaigns.glb", "box")
+						.then(assets => {
+							this.champaign = MRE.Actor.CreateFromPrefab(this.context, {
+								firstPrefabFrom: assets,
+								actor: {
+									parentId: this.text.id,
+									appearance: {
+										enabled: false
+									},
+									transform: {
+										local: {
+											position: {x: 0, y: -1, z:0},
+											rotation: MRE.Quaternion.RotationAxis(MRE.Vector3.Up(), Math.PI)
+										}
+									}
+								}
+							});
+						})
+		);
 		/*promises.push(this.assets.loadGltf("champaign.glb", "box")
 						.then(assets => {
 							this.champaign = MRE.Actor.CreateFromPrefab(this.context, {
@@ -570,6 +629,16 @@ export default class HelloWorld {
 			time: 0.5 * duration,
 			value: new MRE.Vector3(1, 1, 1)
 		}];
+	}
+
+	private generateAppearScaleKeyframes(duration: number): Array<MRE.Keyframe<MRE.Vector3>> {
+		return [{
+			time: 0 * duration,
+			value: MRE.Vector3.Zero()
+		},{
+			time: 1 * duration,
+			value: MRE.Vector3.One()
+		}]
 	}
 
 }
