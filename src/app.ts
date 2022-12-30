@@ -27,7 +27,7 @@ export default class HelloWorld {
 	private newyear: MRE.Actor;
 	private cheerSound: MRE.Sound;
 	private countDownString = "NEW YEAR COUNTDOWN";
-	private finalLineString = "\\ 2022 /";
+	private finalLineString = "\\ 2023 /";
 	private firstTime = true;
 
 	constructor(private context: MRE.Context) {
@@ -496,7 +496,7 @@ export default class HelloWorld {
 							.catch(e => MRE.log.error("app", e)));
 		}
 
-		promises.push(this.assets.loadGltf("newyear.glb", "box")
+		promises.push(this.assets.loadGltf("newyear2023.glb", "box")
 						.then(assets => {
 							this.newyearPrefab = assets.find(a => a.prefab !== null) as MRE.Prefab;
 						})
